@@ -1,0 +1,10 @@
+{% extends "shop/base.html" %}
+{% block title %}Log in | ShopEase{% endblock %}
+{% block content %}
+<main class="section-wrap auth-page"><div class="auth-card"><span class="eyebrow"><span class="eyebrow-line"></span> GOOD TO HAVE YOU BACK</span><h1>Welcome back<span class="brand-period">.</span></h1><p>Log in to finish your order and find your next favourite.</p>
+  <form method="post" class="checkout-form">{% csrf_token %}{% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}<div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</div>{% endfor %}
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+    <button class="button button-dark full-button" type="submit">Log in <span>↗</span></button>
+  </form><p class="auth-switch">New to ShopEase? <a href="{% url 'register' %}">Create an account</a></p></div></main>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Shop quality everyday essentials at ShopEase.">
+  <title>{% block title %}ShopEase | Thoughtful finds for every day{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'shop/styles.css' %}">
+</head>
+<body>
+  <div class="announcement">A little something good for your everyday <span>✦</span> Cash on Delivery available</div>
+  <header class="site-header">
+    <a class="brand" href="{% url 'home' %}" aria-label="ShopEase home"><span class="brand-mark">S</span> shopease<span class="brand-period">.</span></a>
+    <form class="search-form" action="{% url 'home' %}" method="get">
+      <label class="sr-only" for="site-search">Search products</label>
+      <input id="site-search" type="search" name="q" value="{{ request.GET.q }}" placeholder="Search for something lovely...">
+      {% if request.GET.category %}<input type="hidden" name="category" value="{{ request.GET.category }}">{% endif %}
+      <button type="submit" aria-label="Search">⌕</button>
+    </form>
+    <nav class="header-actions" aria-label="Main navigation">
+      {% if user.is_authenticated %}
+        <span class="welcome-user">Hi, {{ user.first_name|default:user.username }}</span>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="nav-link" type="submit">Log out</button></form>
+      {% else %}
+        <a class="nav-link" href="{% url 'login' %}">Log in</a>
+        <a class="nav-link signup-link" href="{% url 'register' %}">Create account</a>
+      {% endif %}
+      <a class="cart-link" href="{% url 'cart' %}"><span aria-hidden="true">🛍</span> Bag <span class="cart-count">{{ cart_item_count }}</span></a>
+    </nav>
+  </header>
+  {% if messages %}
+    <div class="message-stack" role="status">
+      {% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}
+    </div>
+  {% endif %}
+  {% block content %}{% endblock %}
+  <footer class="site-footer">
+    <a class="brand footer-brand" href="{% url 'home' %}"><span class="brand-mark">S</span> shopease<span class="brand-period">.</span></a>
+    <p>Good things for the everyday. Thoughtfully picked, happily delivered.</p>
+    <div class="footer-bottom"><span>© 2026 ShopEase. Made for your everyday.</span><span>Secure checkout · Cash on Delivery</span></div>
+  </footer>
+</body>
+</html>

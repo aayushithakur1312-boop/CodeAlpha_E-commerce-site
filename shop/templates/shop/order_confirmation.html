@@ -1,0 +1,12 @@
+{% extends "shop/base.html" %}
+{% block title %}Order {{ order.number }} | ShopEase{% endblock %}
+{% block content %}
+<main class="section-wrap confirmation-page">
+  <div class="confirmation-card"><div class="confirmation-mark">✓</div><span class="eyebrow">IT’S ON ITS WAY</span><h1>That’s a good choice.</h1><p>Thanks, {{ order.full_name }}. Your order is confirmed and we’ll get it ready for you.</p>
+    <div class="confirmation-number"><span>ORDER NUMBER</span><strong>{{ order.number }}</strong></div>
+    <div class="confirmation-details"><div><span>Delivering to</span><strong>{{ order.full_name }}<br>{{ order.address }}, {{ order.city }} {{ order.postal_code }}</strong></div><div><span>Payment</span><strong>Cash on Delivery</strong></div></div>
+    <div class="confirmation-items">{% for item in order.items.all %}<div><span>{{ item.product_name }} × {{ item.quantity }}</span><strong>₹{{ item.line_total|floatformat:2 }}</strong></div>{% endfor %}<div class="summary-total"><span>Total due on delivery</span><strong>₹{{ order.total|floatformat:2 }}</strong></div></div>
+    <a href="{% url 'home' %}" class="button button-dark">Back to the good stuff <span>↗</span></a>
+  </div>
+</main>
+{% endblock %}

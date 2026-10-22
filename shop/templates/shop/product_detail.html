@@ -1,0 +1,25 @@
+{% extends "shop/base.html" %}
+{% block title %}{{ product.name }} | ShopEase{% endblock %}
+{% block content %}
+<main class="section-wrap detail-page">
+  <p class="breadcrumbs"><a href="{% url 'home' %}">Home</a> / <a href="{% url 'home' %}?category={{ product.category.slug }}">{{ product.category.name }}</a> / {{ product.name }}</p>
+  <section class="detail-layout">
+    <div class="detail-image">{% if product.image_url %}<img src="{{ product.image_url }}" alt="{{ product.name }}">{% else %}<div class="image-placeholder">✦</div>{% endif %}</div>
+    <div class="detail-copy">
+      <span class="eyebrow"><span class="eyebrow-line"></span>{{ product.category.name }}</span>
+      <h1>{{ product.name }}</h1>
+      <p class="detail-price">₹{{ product.price|floatformat:2 }}</p>
+      <p class="detail-description">{{ product.description }}</p>
+      {% if product.stock %}
+        <p class="stock-label"><i></i> In stock · {{ product.stock }} available</p>
+        <form method="post" action="{% url 'cart_add' product.pk %}" class="detail-add-form">
+          {% csrf_token %}
+          <label for="quantity">Quantity</label><input id="quantity" type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" required>
+          <button class="button button-dark" type="submit">Add to bag <span>↗</span></button>
+        </form>
+      {% else %}<p class="stock-label sold-out">Currently out of stock</p>{% endif %}
+      <p class="payment-note">♡ &nbsp;Pay safely at your doorstep with Cash on Delivery.</p>
+    </div>
+  </section>
+</main>
+{% endblock %}
