@@ -1,0 +1,22 @@
+{% extends "shop/base.html" %}
+{% block title %}Checkout | ShopEase{% endblock %}
+{% block content %}
+<main class="section-wrap form-page">
+  <span class="eyebrow"><span class="eyebrow-line"></span> ALMOST YOURS</span><h1 class="page-title">Delivery details<span class="brand-period">.</span></h1>
+  <div class="checkout-layout">
+    <form method="post" class="checkout-form">{% csrf_token %}
+      {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+      {% for field in form %}
+        <div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</div>
+      {% endfor %}
+      <div class="payment-choice"><span class="payment-icon">₹</span><div><strong>Cash on Delivery</strong><small>Pay in cash when your order arrives</small></div><span class="selected-check">✓</span></div>
+      <button class="button button-dark full-button" type="submit">Place COD order · ₹{{ total|floatformat:2 }} <span>↗</span></button>
+      <p class="secure-note">Your order will be confirmed securely. Prices are calculated from the live catalog.</p>
+    </form>
+    <aside class="order-summary checkout-summary"><h2>Your order</h2>
+      {% for item in items %}<div class="checkout-item"><span>{{ item.product.name }} <small>× {{ item.quantity }}</small></span><strong>₹{{ item.subtotal|floatformat:2 }}</strong></div>{% endfor %}
+      <div><span>Shipping</span><strong>Free</strong></div><div class="summary-total"><span>Total</span><strong>₹{{ total|floatformat:2 }}</strong></div>
+    </aside>
+  </div>
+</main>
+{% endblock %}

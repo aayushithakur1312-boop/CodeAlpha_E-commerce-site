@@ -1,0 +1,64 @@
+{% extends "shop/base.html" %}
+{% block title %}ShopEase | Thoughtful finds for every day{% endblock %}
+{% block content %}
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="eyebrow-line"></span> YOUR EVERYDAY, UPGRADED</span>
+      <h1>Find your next<br><em>favourite thing.</em></h1>
+      <p>Good-looking essentials, useful little upgrades, and things you’ll love having around.</p>
+      <a class="button button-dark" href="#collection">Explore the collection <span aria-hidden="true">↗</span></a>
+      <div class="hero-note"><span class="note-stars">★★★★★</span><span>Loved by 2,000+ happy shoppers</span></div>
+    </div>
+    <div class="hero-art" aria-label="A curated selection of everyday products">
+      <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1100&q=90" alt="Premium headphones on a warm background">
+      <div class="hero-sticker"><span>GOOD<br>THINGS</span><b>✦</b></div>
+      <div class="hero-caption"><span>CURATED FOR YOU</span><strong>Little things.<br>Big difference.</strong></div>
+    </div>
+    <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+  </section>
+
+  <section class="trust-row" aria-label="Shop benefits">
+    <div><span>✦</span><strong>Thoughtfully picked</strong><small>Quality you can feel</small></div>
+    <div><span>↗</span><strong>Easy, happy shopping</strong><small>From browse to doorstep</small></div>
+    <div><span>♡</span><strong>Cash on Delivery</strong><small>Pay when it arrives</small></div>
+    <div><span>✓</span><strong>Here to help</strong><small>We’ve got your back</small></div>
+  </section>
+
+  <section class="collection section-wrap" id="collection">
+    <div class="section-heading">
+      <div><span class="eyebrow"><span class="eyebrow-line"></span> THE GOOD STUFF</span><h2>{% if query %}Search results{% else %}A few good finds.{% endif %}</h2></div>
+      <p>{% if query %}Showing matches for “{{ query }}”{% else %}Useful, lovely, and ready to make your day a little better.{% endif %}</p>
+    </div>
+    <div class="category-pills">
+      <a class="category-pill {% if not selected_category %}active{% endif %}" href="{% url 'home' %}{% if query %}?q={{ query|urlencode }}{% endif %}">Everything</a>
+      {% for category in categories %}
+        <a class="category-pill {% if selected_category == category.slug %}active{% endif %}" href="?category={{ category.slug }}{% if query %}&q={{ query|urlencode }}{% endif %}">{{ category.name }}</a>
+      {% endfor %}
+    </div>
+    <div class="product-grid">
+      {% for product in products %}
+        <article class="product-card">
+          <a class="product-image" href="{{ product.get_absolute_url }}">
+            {% if product.image_url %}<img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy">{% else %}<div class="image-placeholder">✦</div>{% endif %}
+            <span class="image-tag">{{ product.category.name }}</span>
+          </a>
+          <div class="product-copy">
+            <div class="product-title-row"><a href="{{ product.get_absolute_url }}"><h3>{{ product.name }}</h3></a><span class="product-price">₹{{ product.price|floatformat:2 }}</span></div>
+            <p>{{ product.description|truncatewords:14 }}</p>
+            <div class="product-card-bottom">
+              {% if product.stock %}<span class="stock-label"><i></i> Ready to ship</span>{% else %}<span class="stock-label sold-out">Out of stock</span>{% endif %}
+              {% if product.stock %}
+                <form method="post" action="{% url 'cart_add' product.pk %}">{% csrf_token %}<input type="hidden" name="quantity" value="1"><input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="add-button" type="submit" aria-label="Add {{ product.name }} to cart">+</button></form>
+              {% else %}<button class="add-button" disabled aria-label="Out of stock">+</button>{% endif %}
+            </div>
+          </div>
+        </article>
+      {% empty %}
+        <div class="empty-state"><span>✦</span><h3>No finds just yet</h3><p>Try a different search or category. The good stuff is out there.</p><a href="{% url 'home' %}" class="button button-dark">See everything</a></div>
+      {% endfor %}
+    </div>
+  </section>
+  <section class="closing-banner"><div><span class="eyebrow">A LITTLE MORE JOY</span><h2>Good days start<br>with good things.</h2></div><a href="#collection" class="button button-light">Find your favourite <span>↗</span></a><span class="banner-flower">✳</span></section>
+</main>
+{% endblock %}

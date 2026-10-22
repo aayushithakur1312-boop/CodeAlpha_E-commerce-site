@@ -1,0 +1,26 @@
+{% extends "shop/base.html" %}
+{% block title %}Your Bag | ShopEase{% endblock %}
+{% block content %}
+<main class="section-wrap form-page">
+  <span class="eyebrow"><span class="eyebrow-line"></span> YOUR FINDS</span><h1 class="page-title">Your bag<span class="brand-period">.</span></h1>
+  {% if items %}
+    <div class="cart-layout">
+      <div class="cart-lines">
+        {% for item in items %}
+          <article class="cart-line">
+            <a class="cart-thumb" href="{{ item.product.get_absolute_url }}">{% if item.product.image_url %}<img src="{{ item.product.image_url }}" alt="">{% else %}<span>✦</span>{% endif %}</a>
+            <div class="cart-line-info"><a href="{{ item.product.get_absolute_url }}"><h2>{{ item.product.name }}</h2></a><p>{{ item.product.category.name }} · ₹{{ item.product.price|floatformat:2 }} each</p>
+              <form class="quantity-form" method="post" action="{% url 'cart_update' item.product.pk %}">{% csrf_token %}<label for="quantity-{{ item.product.pk }}">Qty</label><input id="quantity-{{ item.product.pk }}" type="number" name="quantity" min="1" max="{{ item.product.stock }}" value="{{ item.quantity }}"><button type="submit" class="text-button">Update</button></form>
+            </div>
+            <strong class="cart-line-total">₹{{ item.subtotal|floatformat:2 }}</strong>
+            <form method="post" action="{% url 'cart_remove' item.product.pk %}">{% csrf_token %}<button class="remove-link" type="submit">Remove</button></form>
+          </article>
+        {% endfor %}
+      </div>
+      <aside class="order-summary"><h2>Order summary</h2><div><span>Subtotal</span><strong>₹{{ total|floatformat:2 }}</strong></div><div><span>Shipping</span><strong>Free</strong></div><div class="summary-total"><span>Total</span><strong>₹{{ total|floatformat:2 }}</strong></div><a class="button button-dark full-button" href="{% url 'checkout' %}">Continue to checkout <span>↗</span></a><p>Cash on Delivery · No hidden charges</p></aside>
+    </div>
+  {% else %}
+    <div class="empty-state cart-empty"><span>♡</span><h2>Your bag is taking a little break.</h2><p>There’s nothing in it yet. Let’s find you something good.</p><a class="button button-dark" href="{% url 'home' %}">Explore the collection <span>↗</span></a></div>
+  {% endif %}
+</main>
+{% endblock %}
